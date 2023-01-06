@@ -9,7 +9,7 @@ const URL = path.join('mongodb://',
                         process.env.MONGO_PORT, '/',
                         process.env.MONGO_NAME
                     ) 
-Mongoose.connect(URL, {useNewUrlParser: true });
+Mongoose.connect(URL);
 
 Mongoose.connection.on('error', (err) => {
     if (err) throw err;
