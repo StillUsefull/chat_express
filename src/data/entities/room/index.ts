@@ -22,5 +22,10 @@ export default class Room {
         room.connections.push(connection); 
         room.save(callback);
     };
-    
+    removeUser(room, socket, callback){
+        const userId = socket.request.session.passport.user;
+        const connection = {userId: userId, socketId: socket.id};
+        room.connections.deleteOne(connection);
+        room.save(callback);
+    }
 }
