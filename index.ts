@@ -1,6 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
+const app = express();
+const path = require('path');
+const bodyParser = require('body-parser');
+const session = require('./src/session');
+const passportMiddleware    = require('./src/auth');
+const io = require('./src/socket')(app);
+
 import User from "./src/data/entities/user";
 import Room from "./src/data/entities/room";
 
@@ -81,3 +88,27 @@ router.get('/logout', function(req, res, next) {
 	req.session = null;
 	res.redirect('/');
 });
+
+
+
+
+
+const port = process.env.PORT || 3000;
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static('public'));
+
+app.use(session);
+app.use(passportMiddleware.initialize());
+app.use(passportMiddleware.session());
+
+
+app.use('/', router);
+
+//404
+app.use(function(req, res, next) {
+  res.status(404).sendFile(process.cwd() + '/app/views/404.htm');
+});
+
+io.listen(port);
